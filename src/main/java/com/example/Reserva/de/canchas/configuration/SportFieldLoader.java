@@ -23,7 +23,7 @@ public class SportFieldLoader implements ApplicationRunner {
         SportField footballfield = SportField.builder()
                 .name("dalmine")
                 .sport(Sport.FOOTBALL)
-                .availability(Map.of("10:00", true, "11:00", false, "12.00", true))
+                .availability(Map.of("10:00", true, "11:00", false, "12:00", true))
                 .build();
 
         if (sportFieldRepository.findByName(footballFieldName).isEmpty()) {
@@ -33,7 +33,7 @@ public class SportFieldLoader implements ApplicationRunner {
         SportField tennisfield = SportField.builder()
                 .name("nalbandian")
                 .sport(Sport.TENNIS)
-                .availability(Map.of("10:00", true, "11:00", false, "12.00", true))
+                .availability(Map.of("10:00", true, "11:00", false, "12:00", true))
                 .build();
         if(sportFieldRepository.findByName(tennisFieldName).isEmpty()){
             sportFieldRepository.save(tennisfield);

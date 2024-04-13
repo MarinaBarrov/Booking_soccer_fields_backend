@@ -1,4 +1,4 @@
-package com.example.Reserva.de.canchas.entity;
+package com.example.Reserva.de.canchas.entity.dto;
 
 import com.example.Reserva.de.canchas.entity.domain.Sport;
 import jakarta.validation.constraints.NotBlank;

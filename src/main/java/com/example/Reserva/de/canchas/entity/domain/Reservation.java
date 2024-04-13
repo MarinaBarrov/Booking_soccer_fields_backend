@@ -18,12 +18,11 @@ public class Reservation {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
-    @JsonIgnore
     @ManyToOne
     @JoinColumn(name = "sportfield_id", nullable = false)
     private SportField sportField;
     private LocalDate date;
     private String phone ;
-    private String hours;
+    private String hour;
 
 }
