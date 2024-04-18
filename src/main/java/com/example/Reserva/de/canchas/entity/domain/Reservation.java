@@ -9,6 +9,8 @@ import lombok.Setter;
 import org.springframework.boot.autoconfigure.domain.EntityScan;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+
 @Entity
 @Setter
 @Getter
@@ -17,13 +19,16 @@ import java.time.LocalDate;
 public class Reservation {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+    private Long id;
     @JsonIgnore
     @ManyToOne
     @JoinColumn(name = "sportfield_id", nullable = false)
     private SportField sportField;
-    private LocalDate date;
+    @JoinColumn(name = "client_id")
+    private Client client;
+
+    private LocalDateTime date;
     private String phone ;
-    private String hours;
+    private Double quantityHours;
 
 }

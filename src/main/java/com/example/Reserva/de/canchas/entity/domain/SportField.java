@@ -16,9 +16,12 @@ import java.util.Set;
 public class SportField {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+    private Long id;
     private String name;
     private Sport sport;
+    private Boolean roofed;
+    private Integer quantityPlayers;
+    private Double price;
     @ElementCollection
     private Map<String, Boolean> availability;
     @OneToMany(mappedBy = "sportField")
