@@ -1,5 +1,6 @@
 package com.example.Reserva.de.canchas.service.implementation;
 
+import com.example.Reserva.de.canchas.entity.domain.Sport;
 import com.example.Reserva.de.canchas.entity.dto.ReservationRequestDTO;
 import com.example.Reserva.de.canchas.entity.domain.Reservation;
 import com.example.Reserva.de.canchas.entity.domain.SportField;
@@ -12,10 +13,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.HashSet;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 
 @Service
 public class ReservationService implements IReservationService {
@@ -39,6 +37,7 @@ public class ReservationService implements IReservationService {
             Boolean isAvailable = sportField.getAvailability().get(reservation.getHour());
             if (isAvailable != null && isAvailable) {
                 //TODO: buscar si existe reservas para esa fecha en esa cancha
+                
                 sportFieldFound = sportField;
                 break;
             }
@@ -49,7 +48,6 @@ public class ReservationService implements IReservationService {
         reservation.setSportField(sportFieldFound);
         Reservation reservationSaved = reservationRepository.save(reservation);
         return mapper.convertValue(reservationSaved, ReservationResponseDTO.class);
-
     }
 
     @Override
@@ -79,6 +77,29 @@ public class ReservationService implements IReservationService {
 
         }
         return reservationRequestDTO;
+    }
+
+    @Override
+    public List<ReservationResponseDTO> search(Sport sport, String sportFieldName) {
+
+        List<Reservation> reservations = List.of();
+
+        if (sport != null && sportFieldName != null) {
+            reservations = reservationRepository.findBySportFieldSportAndSportFieldName(sport, sportFieldName);
+        } else if (sport == null && sportFieldName != null) {
+            reservations = reservationRepository.findBySportFieldName(sportFieldName);
+        } else if (sport != null && sportFieldName == null) {
+            reservations = reservationRepository.findBySportFieldSport(sport);
+        }
+
+        if(reservations.isEmpty()){
+            throw new ResourceNotFoundException("There are no reservations");
+        }
+        List<ReservationResponseDTO> reservationResponseDTOS = new ArrayList<>();
+        for (Reservation reservation : reservations) {
+            reservationResponseDTOS.add(mapper.convertValue(reservation, ReservationResponseDTO.class));
+        }
+        return reservationResponseDTOS;
     }
 
     @Override

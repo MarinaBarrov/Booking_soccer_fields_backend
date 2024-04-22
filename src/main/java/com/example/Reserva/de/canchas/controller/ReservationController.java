@@ -1,18 +1,21 @@
 package com.example.Reserva.de.canchas.controller;
 
+import com.example.Reserva.de.canchas.entity.domain.Sport;
+import com.example.Reserva.de.canchas.entity.domain.SportField;
 import com.example.Reserva.de.canchas.entity.dto.ReservationRequestDTO;
 import com.example.Reserva.de.canchas.entity.dto.ReservationResponseDTO;
 import com.example.Reserva.de.canchas.service.implementation.ReservationService;
+import jakarta.annotation.Nullable;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.time.LocalDate;
+import java.util.List;
 
 @RestController
-@RequestMapping("/reservas")
+@RequestMapping("/reservations")
 public class ReservationController {
 
     @Autowired
@@ -23,4 +26,11 @@ public class ReservationController {
         return ResponseEntity.ok(reservationService.guardar(reservationRequestDTO));
     }
 
+    @GetMapping
+    public ResponseEntity<List<ReservationResponseDTO>> search(
+            @Nullable @RequestParam Sport sport,
+            @Nullable @RequestParam("sport_field_name") String sportFieldName
+            ){
+        return  ResponseEntity.ok(reservationService.search(sport, sportFieldName));
+    }
 }
