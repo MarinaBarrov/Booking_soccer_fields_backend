@@ -82,15 +82,7 @@ public class ReservationService implements IReservationService {
     @Override
     public List<ReservationResponseDTO> search(Sport sport, String sportFieldName) {
 
-        List<Reservation> reservations = List.of();
-
-        if (sport != null && sportFieldName != null) {
-            reservations = reservationRepository.findBySportFieldSportAndSportFieldName(sport, sportFieldName);
-        } else if (sport == null && sportFieldName != null) {
-            reservations = reservationRepository.findBySportFieldName(sportFieldName);
-        } else if (sport != null && sportFieldName == null) {
-            reservations = reservationRepository.findBySportFieldSport(sport);
-        }
+        List<Reservation> reservations = reservationRepository.findByCriteria(sport, sportFieldName);
 
         if(reservations.isEmpty()){
             throw new ResourceNotFoundException("There are no reservations");
