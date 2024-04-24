@@ -4,6 +4,7 @@ import com.example.Reserva.de.canchas.entity.domain.Sport;
 import com.example.Reserva.de.canchas.entity.dto.ReservationRequestDTO;
 import com.example.Reserva.de.canchas.entity.domain.Reservation;
 import com.example.Reserva.de.canchas.entity.domain.SportField;
+import com.example.Reserva.de.canchas.entity.dto.ReservationRequestUpdateDTO;
 import com.example.Reserva.de.canchas.entity.dto.ReservationResponseDTO;
 import com.example.Reserva.de.canchas.exception.ResourceNotFoundException;
 import com.example.Reserva.de.canchas.repository.IReservationRepository;
@@ -37,7 +38,7 @@ public class ReservationService implements IReservationService {
             Boolean isAvailable = sportField.getAvailability().get(reservation.getHour());
             if (isAvailable != null && isAvailable) {
                 //TODO: buscar si existe reservas para esa fecha en esa cancha
-                
+
                 sportFieldFound = sportField;
                 break;
             }
@@ -84,7 +85,7 @@ public class ReservationService implements IReservationService {
 
         List<Reservation> reservations = reservationRepository.findByCriteria(sport, sportFieldName);
 
-        if(reservations.isEmpty()){
+        if (reservations.isEmpty()) {
             throw new ResourceNotFoundException("There are no reservations");
         }
         List<ReservationResponseDTO> reservationResponseDTOS = new ArrayList<>();
@@ -105,14 +106,50 @@ public class ReservationService implements IReservationService {
     }
 
     @Override
-    public void actualizar(Integer id, ReservationRequestDTO reservationRequestDTO) {
+    public ReservationResponseDTO update(Integer id, ReservationRequestUpdateDTO reservationRequestUpDateDTO) {
         Optional<Reservation> reservationOptional = reservationRepository.findById(id);
 
-        if (reservationOptional.isPresent()) {
-            Reservation reservation = mapper.convertValue(reservationOptional, Reservation.class);
-            reservationRepository.save(reservation);
-        } else {
-            throw new RuntimeException("La reserva con id " + id + " no fue encontrado para actualizar");
+        if (!reservationOptional.isPresent()) {
+            throw new ResourceNotFoundException("La reserva con id " + id + " no fue encontrado para actualizar");
         }
+
+
+        Reservation reservation = reservationOptional.get();
+
+        if (reservationRequestUpDateDTO.getHour() != null) {
+            Set<SportField> sportFieldList = sportFieldRepository.findBySport(reservation.getSportField().getSport());
+
+            SportField sportFieldFound = null;
+
+            for (SportField sportField : sportFieldList) {
+                Boolean isAvailable = sportField.getAvailability().get(reservationRequestUpDateDTO.getHour());
+                if (isAvailable != null && isAvailable) {
+                    //TODO: buscar si existe reservas para esa fecha en esa cancha
+
+                    sportFieldFound = sportField;
+                    break;
+                }
+            }
+            if (sportFieldFound == null) {
+                throw new ResourceNotFoundException("There is not sport field available at the requested time. " +
+                        "The reservation was not updated");
+            }
+
+            reservation.setSportField(sportFieldFound);
+            reservation.setHour(reservationRequestUpDateDTO.getHour());
+        }
+
+        if (reservationRequestUpDateDTO.getPhone() != null) {
+            reservation.setPhone(reservationRequestUpDateDTO.getPhone());
+        }
+        if (reservationRequestUpDateDTO.getDate() != null) {
+            reservation.setDate(reservationRequestUpDateDTO.getDate());
+        }
+
+        Reservation reservationUpdated = reservationRepository.save(reservation);
+        return mapper.convertValue(reservationUpdated, ReservationResponseDTO.class);
     }
+
+
 }
+
