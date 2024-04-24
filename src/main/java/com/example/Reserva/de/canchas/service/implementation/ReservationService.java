@@ -95,12 +95,12 @@ public class ReservationService implements IReservationService {
     }
 
     @Override
-    public void eliminar(Integer id) {
+    public void delete(Integer id) {
         Optional<Reservation> reservationOptional = reservationRepository.findById(id);
         if (reservationOptional.isPresent()) {
             reservationRepository.deleteById(id);
         } else {
-            throw new RuntimeException("No se encontro la reserva con id" + id);
+            throw new ResourceNotFoundException("There is no reservation with id " + id);
         }
     }
 

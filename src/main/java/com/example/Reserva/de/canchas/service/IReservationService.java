@@ -15,7 +15,7 @@ public interface IReservationService {
     Set<ReservationRequestDTO> listarTodos();
 
     ReservationRequestDTO buscarPorId(Integer id);
-    void eliminar(Integer id);
+    void delete(Integer id);
     void actualizar(Integer id, ReservationRequestDTO reservationRequestDTO);
 
     List<ReservationResponseDTO> search(Sport sport, String sportFieldName);

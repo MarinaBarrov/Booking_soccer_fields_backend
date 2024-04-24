@@ -8,6 +8,7 @@ import com.example.Reserva.de.canchas.service.implementation.ReservationService;
 import jakarta.annotation.Nullable;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -32,5 +33,11 @@ public class ReservationController {
             @Nullable @RequestParam("sport_field_name") String sportFieldName
             ){
         return  ResponseEntity.ok(reservationService.search(sport, sportFieldName));
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity delete(@PathVariable Integer id){
+        reservationService.delete(id);
+        return ResponseEntity.status(HttpStatus.OK).build();
     }
 }
